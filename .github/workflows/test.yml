@@ -2,7 +2,7 @@ name: test hypervisor capabilities
 on:
   push:
     branches:
-      - feat/ci-test-cloud-hypervisor
+      - feat/ci-use-raw-images
   workflow_run:
     workflows:
       - nightly

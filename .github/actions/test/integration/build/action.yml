@@ -87,10 +87,7 @@ runs:
         sudo umount "$RUNNER_TEMP/esp"
         sudo losetup -d "$LOOPDEV"
 
-    - name: Convert to QCOW2
-      shell: bash
-      run: |
-        qemu-img convert -O qcow2 "$DISK_IMG" "/opt/${TAG}.qcow2"
+        mv "$DISK_IMG" "/opt/${TAG}.raw"
 
     - name: Generate ignition
       shell: bash
@@ -109,11 +106,8 @@ runs:
       shell: bash
       run: |
         wget -q "https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img" -O /opt/ubuntu.qcow2
-
-    - name: Generate raw ubuntu image for CHV
-      shell: bash
-      run: |
         qemu-img convert -p -f qcow2 -O raw /opt/ubuntu.qcow2 /opt/ubuntu.raw
+        rm /opt/ubuntu.qcow2
 
     - name: Generate ubuntu cloud-init
       shell: bash

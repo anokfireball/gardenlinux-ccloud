@@ -13,7 +13,7 @@ runs:
         IP_HV2="192.168.122.3"
 
         scp $SSH_OPTS ./.github/actions/test/integration/test/qemu/vm.xml "$USER@$IP_HV1:/opt/vm-qemu.xml"
-        scp $SSH_OPTS /opt/ubuntu.qcow2 "$USER@$IP_HV1:/var/lib/libvirt/images/ubuntu.qcow2"
+        scp $SSH_OPTS /opt/ubuntu.raw "$USER@$IP_HV1:/var/lib/libvirt/images/ubuntu.raw"
         scp $SSH_OPTS /opt/ubuntu-cloud-init-ds.iso "$USER@$IP_HV1:/var/lib/libvirt/images/ubuntu-cloud-init-ds.iso"
 
         # the cloud-init data is not migrated from source to destination, but needed for the VM to run at the destination
@@ -145,7 +145,7 @@ runs:
           ssh $SSH_OPTS "$USER@$IP" << EOF
             virsh destroy VM-QEMU || true
             virsh undefine VM-QEMU --nvram --tpm --remove-all-storage
-            rm -f /var/lib/libvirt/images/ubuntu.qcow2
+            rm -f /var/lib/libvirt/images/ubuntu.raw
             rm -f /opt/vm-qemu.xml
         EOF
         }

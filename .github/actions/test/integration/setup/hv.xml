@@ -13,8 +13,7 @@
     <cpu mode='host-passthrough' check='none' migratable='on' />
     <devices>
         <disk type='file' device='disk'>
-            <driver name='qemu' type='qcow2' />
-            <source file='/var/lib/libvirt/images/HV_NAME_GOES_HERE.qcow2' />
+            <source file='/var/lib/libvirt/images/HV_NAME_GOES_HERE.raw' />
             <target dev='hda' bus='ide' />
         </disk>
         <interface type='network'>

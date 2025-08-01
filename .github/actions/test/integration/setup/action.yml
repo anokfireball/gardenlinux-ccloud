@@ -23,7 +23,7 @@ runs:
         cp ./.github/actions/test/integration/setup/hv.xml ./.github/actions/test/integration/setup/hv1.xml
         sed -i "s|HV_NAME_GOES_HERE|HV1|g" ./.github/actions/test/integration/setup/hv1.xml
         sed -i "s|MAC_GOES_HERE|52:54:00:12:34:56|g" ./.github/actions/test/integration/setup/hv1.xml
-        sudo cp "/opt/${TAG}.qcow2" /var/lib/libvirt/images/HV1.qcow2
+        sudo cp "/opt/${TAG}.raw" /var/lib/libvirt/images/HV1.raw
 
         sudo virsh define ./.github/actions/test/integration/setup/hv1.xml
         sudo virsh start HV1
@@ -34,7 +34,7 @@ runs:
         cp ./.github/actions/test/integration/setup/hv.xml ./.github/actions/test/integration/setup/hv2.xml
         sed -i "s|HV_NAME_GOES_HERE|HV2|g" ./.github/actions/test/integration/setup/hv2.xml
         sed -i "s|MAC_GOES_HERE|52:54:00:65:43:21|g" ./.github/actions/test/integration/setup/hv2.xml
-        sudo cp "/opt/${TAG}.qcow2" /var/lib/libvirt/images/HV2.qcow2
+        sudo cp "/opt/${TAG}.raw" /var/lib/libvirt/images/HV2.raw
 
         sudo virsh define ./.github/actions/test/integration/setup/hv2.xml
         sudo virsh start HV2
