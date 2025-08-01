@@ -1,5 +1,5 @@
-name: test
-description: Execute Integration Tests for Hypervisor Capabilities
+name: test-qemu
+description: Execute Integration Tests for Hypervisor Capabilities (QEMU)
 runs:
   using: "composite"
   steps:
@@ -12,7 +12,7 @@ runs:
         IP_HV1="192.168.122.2"
         IP_HV2="192.168.122.3"
 
-        scp $SSH_OPTS ./.github/actions/test/integration/test/vm.xml "$USER@$IP_HV1:/opt/vm.xml"
+        scp $SSH_OPTS ./.github/actions/test/integration/test/qemu/vm.xml "$USER@$IP_HV1:/opt/vm-qemu.xml"
         scp $SSH_OPTS /opt/ubuntu.qcow2 "$USER@$IP_HV1:/var/lib/libvirt/images/ubuntu.qcow2"
         scp $SSH_OPTS /opt/ubuntu-cloud-init-ds.iso "$USER@$IP_HV1:/var/lib/libvirt/images/ubuntu-cloud-init-ds.iso"
 
@@ -28,7 +28,7 @@ runs:
         IP_HV1="192.168.122.2"
 
         ssh $SSH_OPTS "$USER@$IP_HV1" << EOF
-          virsh define /opt/vm.xml
+          virsh define /opt/vm-qemu.xml
           virsh start VM
         EOF
 
@@ -58,7 +58,7 @@ runs:
             fi
             if (( i == MAX_ITER )); then
               echo "Timeout waiting for VM to respond to SSH."
-              cat /var/log/VM.log
+              cat /var/log/QEMU.log
               exit 1
             fi
             echo "Waiting for VM to respond to SSH... (\$i/\$MAX_ITER)"
@@ -123,10 +123,31 @@ runs:
             fi
             if (( i == MAX_ITER )); then
               echo "Timeout waiting for VM to respond to SSH."
-              cat /var/log/VM.log
+              cat /var/log/QEMU.log
               exit 1
             fi
             echo "Waiting for VM to respond to SSH... (\$i/\$MAX_ITER)"
             sleep 10
           done
         EOF
+
+    - name: Clean up HyperVisors
+      shell: bash
+      run: |
+        KEY=/opt/ssh_host_ed25519_key
+        SSH_OPTS="-i $KEY -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+        USER="root"
+        IP_HV1="192.168.122.2"
+        IP_HV2="192.168.122.3"
+
+        cleanup() {
+          local IP="$1"
+          ssh $SSH_OPTS "$USER@$IP" << EOF
+            virsh undefine VM --nvram --tpm --remove-all-storage
+            rm -f /var/lib/libvirt/images/ubuntu.qcow2
+            rm -f /opt/vm-qemu.xml
+        EOF
+        }
+
+        cleanup "$IP_HV1"
+        cleanup "$IP_HV2"

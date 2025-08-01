@@ -32,7 +32,7 @@
             <target type='serial' port='0' />
         </console>
         <serial type='file'>
-            <source path='/var/log/VM.log' />
+            <source path='/var/log/QEMU.log' />
             <target port='0' />
         </serial>
     </devices>
